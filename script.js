@@ -1110,3 +1110,4 @@ window.addEventListener("load", () => {
   const today = new Date().toLocaleDateString("hr-HR");
   document.getElementById("date").value = today;
 });
+const today = new Date().toLocaleDateString("hr-HR");
