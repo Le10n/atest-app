@@ -1090,3 +1090,7 @@ function generatePDF() {
     getValue,
   });
 }
+
+if (window.innerWidth < 900) {
+  document.querySelector('.right')?.scrollIntoView({ behavior: 'smooth' });
+}
