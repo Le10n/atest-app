@@ -643,3 +643,97 @@ body.dark .pill {
     align-items: flex-start;
   }
 }
+
+
+/* 📱 MOBILE / TABLET MODE */
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .left, .right {
+    gap: 16px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .hero h1 {
+    font-size: 22px;
+  }
+
+  .hero p {
+    font-size: 14px;
+  }
+
+  /* 🔘 Gumbi veliki za tablet */
+  .actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .btn {
+    width: 100%;
+    font-size: 16px;
+    padding: 16px;
+    min-height: 52px;
+  }
+
+  /* 📥 Inputi veći */
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+    padding: 14px;
+    min-height: 48px;
+  }
+
+  /* 📊 Sve gridove u 1 stupac */
+  .grid-2,
+  .grid-3,
+  .toggle-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 🔘 Toggle gumbi veći */
+  .toggle-box {
+    padding: 16px;
+    font-size: 15px;
+  }
+
+  /* 📦 Score box pojednostavljen */
+  .score-value {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 900px) {
+  #saveProjectBtn,
+  #loadProjectBtn,
+  #exportJsonBtn,
+  #settingsOpenBtn,
+  #circuitOpenBtn {
+    display: none !important;
+  }
+}
+
+.hero {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+@media (max-width: 900px) {
+  .right {
+    display: none;
+  }
+}
