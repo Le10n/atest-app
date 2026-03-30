@@ -1106,3 +1106,7 @@ function setDate(value) {
 
   document.getElementById("date").value = formatted;
 }
+window.addEventListener("load", () => {
+  const today = new Date().toLocaleDateString("hr-HR");
+  document.getElementById("date").value = today;
+});
