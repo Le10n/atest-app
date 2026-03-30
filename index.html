@@ -65,9 +65,14 @@
             </div>
 
             <div class="field">
-              <label for="date">Datum</label>
-              <input id="date" type="date" />
-            </div>
+  <label for="date">Datum</label>
+
+  <!-- vidljivi input -->
+  <input id="date" type="text" readonly placeholder="Odaberi datum" onclick="openDatePicker()" />
+
+  <!-- skriveni pravi date picker -->
+  <input id="realDate" type="date" style="display:none" onchange="setDate(this.value)" />
+</div>
 
             <div class="field">
               <label for="reportNumber">Broj izvještaja</label>
