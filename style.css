@@ -858,3 +858,30 @@ body.dark .pill {
     font-size: 11px;
   }
 }
+
+/* 📅 FIX ZA DATE INPUT */
+input[type="date"] {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* iOS fix */
+input[type="date"]::-webkit-date-and-time-value {
+  text-align: center;
+  width: 100%;
+}
+
+/* ukloni čudni padding na iOS */
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-calendar-picker-indicator {
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  input[type="date"] {
+    font-size: 18px;
+    height: 52px;
+  }
+}
