@@ -1094,3 +1094,15 @@ function generatePDF() {
 if (window.innerWidth < 900) {
   document.querySelector('.right')?.scrollIntoView({ behavior: 'smooth' });
 }
+function openDatePicker() {
+  document.getElementById("realDate").click();
+}
+
+function setDate(value) {
+  if (!value) return;
+
+  const d = new Date(value);
+  const formatted = d.toLocaleDateString("hr-HR");
+
+  document.getElementById("date").value = formatted;
+}
