@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A-test analizator elektroinstalacija Pro</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script defer src="storage.js"></script>
+  <script defer src="pdf.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header class="hero">
+      <div class="hero-main">
+        <div class="logo-preview" id="headerLogoPreview">
+          <span class="muted">Logo</span>
+        </div>
+        <div>
+          <div class="badge">A-test analizator elektroinstalacija Pro</div>
+          <h1>Unos mjerenja, AI procjena i profesionalni PDF zapisnik</h1>
+          <p>
+            Unesi mjerenja, dodaj firmu, logo, potpis, objekt, krugove i osigurače.
+            Aplikacija automatski analizira rezultate, daje preporuke i generira završni PDF izvještaj.
+          </p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-secondary" id="themeBtn" type="button">🌙 Tamni način</button>
+        <button class="btn btn-secondary" id="settingsOpenBtn" type="button">⚙️ Postavke firme</button>
+        <button class="btn btn-secondary" id="circuitOpenBtn" type="button">🔌 Krugovi i osigurači</button>
+        <button class="btn btn-secondary" id="saveProjectBtn" type="button">💾 Spremi projekt</button>
+        <button class="btn btn-secondary" id="loadProjectBtn" type="button">📂 Učitaj projekt</button>
+        <button class="btn btn-secondary" id="exportJsonBtn" type="button">⬇️ JSON</button>
+        <button class="btn btn-primary" id="generatePdfBtn" type="button">📄 Generiraj PDF</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="left">
+        <article class="card">
+          <h2>Osnovni podaci</h2>
+
+          <div class="grid grid-2">
+            <div class="field">
+              <label for="projectName">Naziv projekta</label>
+              <input id="projectName" type="text" placeholder="npr. Atest kuće Horvat" />
+            </div>
+
+            <div class="field">
+              <label for="clientName">Naručitelj</label>
+              <input id="clientName" type="text" placeholder="Ime klijenta" />
+            </div>
+
+            <div class="field">
+              <label for="location">Lokacija</label>
+              <input id="location" type="text" placeholder="Grad, adresa" />
+            </div>
+
+            <div class="field">
+              <label for="inspectorName">Ispitivač</label>
+              <input id="inspectorName" type="text" placeholder="Ime i prezime" />
+            </div>
+
+            <div class="field">
+              <label for="date">Datum</label>
+              <input id="date" type="date" />
+            </div>
+
+            <div class="field">
+              <label for="reportNumber">Broj izvještaja</label>
+              <input id="reportNumber" type="text" placeholder="AT-2026-001" />
+            </div>
+
+            <div class="field">
+              <label for="installationType">Tip instalacije</label>
+              <select id="installationType">
+                <option value="stambena">Stambena</option>
+                <option value="poslovna">Poslovna</option>
+                <option value="industrijska">Industrijska</option>
+                <option value="ostalo">Ostalo</option>
+                <option value="fotonaponska">Fotonaponska elektrana</option>
+                <option value="ev-punionica">EV punionica</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="supplySystem">Sustav napajanja</label>
+              <select id="supplySystem">
+                <option value="TN-S">TN-S</option>
+                <option value="TN-C-S">TN-C-S</option>
+                <option value="TT">TT</option>
+                <option value="IT">IT</option>
+                <option value="ostalo">Ostalo</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="nominalVoltage">Nazivni napon (V)</label>
+              <input id="nominalVoltage" type="number" step="1" placeholder="230" />
+            </div>
+
+            <div class="field">
+              <label for="frequency">Frekvencija (Hz)</label>
+              <input id="frequency" type="number" step="1" placeholder="50" />
+            </div>
+
+            <div class="field">
+              <label for="objectName">Naziv objekta</label>
+              <input id="objectName" type="text" placeholder="npr. Poslovni objekt Centar" />
+            </div>
+
+            <div class="field">
+              <label for="objectPhoto">Slika objekta</label>
+              <input id="objectPhoto" type="file" accept="image/*" />
+            </div>
+
+            <div class="field field-full">
+              <label for="notes">Napomene</label>
+              <textarea
+                id="notes"
+                placeholder="Dodatne napomene o objektu, uvjetima mjerenja ili zapažanjima"
+              ></textarea>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Mjerenja i provjere</h2>
+          <div class="section-note">
+            Za svaki tip instalacije kasnije će se u JavaScriptu prikazivati samo bitna mjerenja.
+          </div>
+
+          <div class="grid grid-3">
+            <div class="field" data-types="stambena,poslovna,industrijska,ostalo,fotonaponska,ev-punionica">
+              <label for="continuityOhm">Kontinuitet PE vodiča (Ω)</label>
+              <input id="continuityOhm" type="number" step="0.01" />
+            </div>
+
+            <div class="field" data-types="stambena,poslovna,industrijska,ostalo,fotonaponska,ev-punionica">
+              <label for="insulationMOhm">Izolacijski otpor L-E (MΩ)</label>
+              <input id="insulationMOhm" type="number" step="0.01" />
+            </div>
+
+            <div class="field" data-types="stambena,poslovna,industrijska,ostalo,fotonaponska,ev-punionica">
+              <label for="insulationLLMOhm">Izolacijski otpor L-L (MΩ)</label>
+              <input id="insulationLLMOhm" type="number" step="0.01" />
+            </div>
+
+            <div class="field" data-types="stambena,poslovna,industrijska,ostalo,fotonaponska,ev-punionica">
+              <label for="earthResistanceOhm">Otpor uzemljenja / elektrode (Ω)</label>
+              <input id="earthResistanceOhm" type="number" step="0.01" />
+            </div>
+
+            <div class="field" data-types="stambena,poslovna,industrijska,ostalo,ev-punionica">
+              <label for="loopImpedanceOhm">Impedancija petlje kvara Zs (Ω)</label>
+              <input id="loopImpedanceOhm" type="number" step="0.01" />
+            </div>
+
+            <div class="field" data-types="stambena,poslovna,industrijska,ostalo,ev-punionica">
+              <label for="externalLoopZe">Vanjska petlja kvara Ze (Ω)</label>
+              <input id="externalLoopZe" type="number" step="0.01" />
+            </div>
+
+            <div class="field" data-types="stambena,poslovna,industrijska,ostalo,ev-punionica">
+              <label for="rcdTripMs">RCD vrijeme isključenja (ms)</label>
+              <input id="rcdTripMs" type="number" step="0.01" />
+            </div>
+
+            <div class="field" data-types="stambena,poslovna,industrijska,ostalo,ev-punionica">
+              <label for="rcdTripCurrentMa">RCD struja okidanja (mA)</label>
+              <input id="rcdTripCurrentMa" type="number" step="0.01" />
+            </div>
+
+            <div class="field" data-types="stambena,poslovna,industrijska,ostalo,ev-punionica">
+              <label for="rcdRatedMa">Nazivna RCD struja IΔn (mA)</label>
+              <input id="rcdRatedMa" type="number" step="0.01" value="30" />
+            </div>
+
+            <div class="field" data-types="industrijska,ev-punionica">
+              <label for="ipfKa">Prospektivna struja kvara Ipf (kA)</label>
+              <input id="ipfKa" type="number" step="0.01" />
+            </div>
+
+            <div class="field" data-types="stambena,poslovna,industrijska,ostalo,ev-punionica">
+              <label for="r1r2Ohm">R1 + R2 (Ω)</label>
+              <input id="r1r2Ohm" type="number" step="0.01" />
+            </div>
+
+            <div class="field" data-types="poslovna,industrijska">
+              <label for="ringContinuityOhm">Kontinuitet ring kruga (Ω)</label>
+              <input id="ringContinuityOhm" type="number" step="0.01" />
+            </div>
+
+            <div class="field" data-types="stambena,poslovna,industrijska,ostalo,fotonaponska,ev-punionica">
+              <label for="insulationTestVoltage">Testni napon izolacije (V)</label>
+              <select id="insulationTestVoltage">
+                <option value="250">250 V</option>
+                <option value="500" selected>500 V</option>
+                <option value="1000">1000 V</option>
+              </select>
+            </div>
+
+            <div class="field" data-types="stambena,poslovna,industrijska,ostalo,fotonaponska,ev-punionica">
+              <label for="maxVoltageDrop">Pad napona (%)</label>
+              <input id="maxVoltageDrop" type="number" step="0.01" />
+            </div>
+
+            <div class="field" data-types="industrijska,ostalo">
+              <label for="floorWallResistance">Otpor poda/zida (kΩ)</label>
+              <input id="floorWallResistance" type="number" step="0.01" />
+            </div>
+
+            <div class="field" data-types="fotonaponska">
+              <label for="pvVoc">PV otvoreni napon Voc (V)</label>
+              <input id="pvVoc" type="number" step="0.01" />
+            </div>
+
+            <div class="field" data-types="fotonaponska">
+              <label for="pvIsc">PV struja kratkog spoja Isc (A)</label>
+              <input id="pvIsc" type="number" step="0.01" />
+            </div>
+
+            <div class="field" data-types="fotonaponska">
+              <label for="pvStringPolarity">PV polaritet stringa</label>
+              <select id="pvStringPolarity">
+                <option value="ispravno">Ispravno</option>
+                <option value="neispravno">Neispravno</option>
+              </select>
+            </div>
+
+            <div class="field" data-types="ev-punionica">
+              <label for="evCpdTest">CP/PP test EV punionice</label>
+              <select id="evCpdTest">
+                <option value="ispravno">Ispravno</option>
+                <option value="neispravno">Neispravno</option>
+              </select>
+            </div>
+
+            <div class="field" data-types="ev-punionica">
+              <label for="evTripMs">Vrijeme isključenja EV zaštite (ms)</label>
+              <input id="evTripMs" type="number" step="0.01" />
+            </div>
+          </div>
+
+          <div class="toggle-grid top-gap">
+            <button class="toggle-box ok" data-key="polarityCorrect" data-types="stambena,poslovna,industrijska,ostalo,ev-punionica" type="button">
+              <span>Polaritet ispravan</span>
+              <span class="pill">DA</span>
+            </button>
+
+            <button class="toggle-box ok" data-key="phaseOrderCorrect" data-types="poslovna,industrijska,ostalo,fotonaponska,ev-punionica" type="button">
+              <span>Redoslijed faza ispravan</span>
+              <span class="pill">DA</span>
+            </button>
+
+            <button class="toggle-box ok" data-key="breakerSizingCorrect" data-types="stambena,poslovna,industrijska,ostalo,ev-punionica" type="button">
+              <span>Zaštitni uređaji pravilno dimenzionirani</span>
+              <span class="pill">DA</span>
+            </button>
+
+            <button class="toggle-box ok" data-key="visualInspectionOk" data-types="stambena,poslovna,industrijska,ostalo,fotonaponska,ev-punionica" type="button">
+              <span>Vizualni pregled uredan</span>
+              <span class="pill">DA</span>
+            </button>
+
+            <button class="toggle-box ok" data-key="functionalTestOk" data-types="stambena,poslovna,industrijska,ostalo,fotonaponska,ev-punionica" type="button">
+              <span>Funkcionalni test uređaja uredan</span>
+              <span class="pill">DA</span>
+            </button>
+
+            <button class="toggle-box ok" data-key="separationOk" data-types="industrijska,ostalo,fotonaponska" type="button">
+              <span>Odvajanje krugova potvrđeno</span>
+              <span class="pill">DA</span>
+            </button>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Granice procjene</h2>
+          <div class="section-note">
+            Možeš ih prilagoditi svojoj praksi, zapisniku ili normama koje koristiš.
+          </div>
+
+          <div class="grid grid-3">
+            <div class="field">
+              <label for="continuityMaxOhm">Maks. kontinuitet PE (Ω)</label>
+              <input id="continuityMaxOhm" type="number" step="0.01" value="1" />
+            </div>
+
+            <div class="field">
+              <label for="insulationMinMOhm">Min. izolacija (MΩ)</label>
+              <input id="insulationMinMOhm" type="number" step="0.01" value="0.5" />
+            </div>
+
+            <div class="field">
+              <label for="earthResistanceMaxOhm">Maks. otpor uzemljenja (Ω)</label>
+              <input id="earthResistanceMaxOhm" type="number" step="0.01" value="10" />
+            </div>
+
+            <div class="field">
+              <label for="loopImpedanceMaxOhm">Maks. Zs (Ω)</label>
+              <input id="loopImpedanceMaxOhm" type="number" step="0.01" value="2" />
+            </div>
+
+            <div class="field">
+              <label for="externalLoopZeMax">Maks. Ze (Ω)</label>
+              <input id="externalLoopZeMax" type="number" step="0.01" value="1" />
+            </div>
+
+            <div class="field">
+              <label for="rcdTripMaxMs">Maks. RCD vrijeme (ms)</label>
+              <input id="rcdTripMaxMs" type="number" step="0.01" value="300" />
+            </div>
+
+            <div class="field">
+              <label for="rcdTripCurrentMaxMa">Maks. RCD struja (mA)</label>
+              <input id="rcdTripCurrentMaxMa" type="number" step="0.01" value="30" />
+            </div>
+
+            <div class="field">
+              <label for="r1r2MaxOhm">Maks. R1+R2 (Ω)</label>
+              <input id="r1r2MaxOhm" type="number" step="0.01" value="1" />
+            </div>
+
+            <div class="field">
+              <label for="ringContinuityMaxOhm">Maks. ring kontinuitet (Ω)</label>
+              <input id="ringContinuityMaxOhm" type="number" step="0.01" value="1" />
+            </div>
+
+            <div class="field">
+              <label for="maxVoltageDropLimit">Maks. pad napona (%)</label>
+              <input id="maxVoltageDropLimit" type="number" step="0.01" value="5" />
+            </div>
+
+            <div class="field">
+              <label for="floorWallResistanceMin">Min. otpor poda/zida (kΩ)</label>
+              <input id="floorWallResistanceMin" type="number" step="0.01" value="50" />
+            </div>
+
+            <div class="field">
+              <label for="evTripMaxMs">Maks. vrijeme EV zaštite (ms)</label>
+              <input id="evTripMaxMs" type="number" step="0.01" value="300" />
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <aside class="right">
+        <article class="card">
+          <h2>Rezultat analize</h2>
+
+          <div id="scoreBox" class="score-box good">
+            <h3>Konačni score</h3>
+            <div id="scoreValue" class="score-value">100/100</div>
+            <div id="scoreLabel">Ocjena: Odlično</div>
+          </div>
+
+          <div id="statusBox" class="status-box status-safe top-gap-small">
+            <strong id="safeTitle">Instalacija je sigurna</strong>
+            <div id="verdictText" class="muted top-gap-tiny">
+              Instalacija zadovoljava osnovne kriterije sigurnosti.
+            </div>
+          </div>
+
+          <div class="summary-box top-gap-small">
+            <strong>Sažetak</strong>
+            <div id="summaryPassed" class="summary-line">Prošlo: 0/0 kriterija</div>
+            <div id="summaryFailed" class="summary-line">Neispravno: 0</div>
+            <div id="summaryMissing" class="summary-line">Nedostaje unosa: 0</div>
+          </div>
+
+          <div class="summary-box top-gap-small">
+            <strong>Status po razini</strong>
+
+            <div class="chips top-gap-tiny">
+              <span class="chip chip-ok">Zeleno = ispravno</span>
+              <span class="chip chip-warn">Žuto = upozorenje</span>
+              <span class="chip chip-danger">Crveno = neispravno</span>
+              <span class="chip chip-na">Sivo = nije primjenjivo</span>
+            </div>
+
+            <div class="quick-grid top-gap-small">
+              <div class="quick-info status-card-ok">
+                <strong>Ispravno</strong>
+                <div id="summaryOkCount" class="muted">0 stavki</div>
+              </div>
+
+              <div class="quick-info status-card-warn">
+                <strong>Upozorenje</strong>
+                <div id="summaryWarningCount" class="muted">0 stavki</div>
+              </div>
+
+              <div class="quick-info status-card-danger">
+                <strong>Kritično</strong>
+                <div id="summaryCriticalCount" class="muted">0 stavki</div>
+              </div>
+
+              <div class="quick-info status-card-na">
+                <strong>Nije primjenjivo</strong>
+                <div id="summaryNaCount" class="muted">0 stavki</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Podaci firme</h2>
+
+          <div class="company-card">
+            <div class="company-card-logo" id="companyCardLogo">
+              <span class="muted">Logo</span>
+            </div>
+            <div>
+              <div id="companyNamePreview" class="strong">Tvoja firma</div>
+              <div id="companyMetaPreview" class="muted">Adresa, OIB, kontakt</div>
+            </div>
+          </div>
+
+          <div class="footer-note">
+            U postavkama možeš dodati logo, naziv firme, adresu, OIB, email, telefon, web i tekst potpisa.
+            Sve ulazi u PDF izvještaj.
+          </div>
+
+          <div class="quick-grid top-gap-small">
+            <div class="quick-info">
+              <strong>Slika objekta</strong>
+              <div id="objectPhotoPreview" class="muted">Nije dodana</div>
+            </div>
+            <div class="quick-info">
+              <strong>Potpis</strong>
+              <div id="signaturePreviewStatus" class="muted">Nije dodan</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Krugovi i osigurači</h2>
+          <div id="circuitsSummary" class="muted">Nema dodanih krugova.</div>
+          <div class="footer-note">
+            Dodaj više krugova, osigurače, presjek vodiča, Zs, pad napona i rezultat po svakom krugu.
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Dodatni testovi</h2>
+          <div class="chips">
+            <span class="chip">L-L izolacija</span>
+            <span class="chip">Ze</span>
+            <span class="chip">Ipf</span>
+            <span class="chip">R1+R2</span>
+            <span class="chip">Ring kontinuitet</span>
+            <span class="chip">Pad napona</span>
+            <span class="chip">Otpor poda/zida</span>
+            <span class="chip">PV Voc/Isc</span>
+            <span class="chip">EV CP/PP</span>
+          </div>
+          <div id="testsNote" class="footer-note">
+            Polja će se prikazivati ovisno o odabranom tipu instalacije.
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>AI preporuke</h2>
+          <div id="recommendations"></div>
+        </article>
+
+        <article class="card">
+          <h2>Detaljni status</h2>
+
+          <div class="chips top-gap-tiny">
+            <span class="chip chip-ok">Ispravno</span>
+            <span class="chip chip-warn">Upozorenje</span>
+            <span class="chip chip-danger">Kritično</span>
+            <span class="chip chip-na">Nije primjenjivo</span>
+          </div>
+
+          <div id="detailList" class="top-gap-small"></div>
+        </article>
+      </aside>
+    </main>
+  </div>
+
+  <div class="modal" id="circuitModal">
+    <div class="modal-content">
+      <div class="modal-head">
+        <h3>Krugovi i osigurači</h3>
+        <button class="btn" id="closeCircuitModalBtn" type="button">Zatvori</button>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="field">
+          <label for="circuitName">Naziv kruga</label>
+          <input id="circuitName" type="text" placeholder="npr. Rasvjeta prizemlje" />
+        </div>
+
+        <div class="field">
+          <label for="circuitBreaker">Osigurač / automat</label>
+          <input id="circuitBreaker" type="text" placeholder="B16, C20..." />
+        </div>
+
+        <div class="field">
+          <label for="circuitType">Tip kruga</label>
+          <select id="circuitType">
+            <option>Rasvjeta</option>
+            <option>Utičnice</option>
+            <option>Motor</option>
+            <option>Klima</option>
+            <option>Kuhinja</option>
+            <option>Ostalo</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="circuitCable">Presjek vodiča</label>
+          <input id="circuitCable" type="text" placeholder="3x2.5 mm²" />
+        </div>
+
+        <div class="field">
+          <label for="circuitLength">Dužina voda (m)</label>
+          <input id="circuitLength" type="number" step="0.01" />
+        </div>
+
+        <div class="field">
+          <label for="circuitMeasuredZs">Zs kruga (Ω)</label>
+          <input id="circuitMeasuredZs" type="number" step="0.01" />
+        </div>
+
+        <div class="field">
+          <label for="circuitRcd">RCD zaštita</label>
+          <select id="circuitRcd">
+            <option>Da</option>
+            <option>Ne</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="circuitVoltageDrop">Pad napona (%)</label>
+          <input id="circuitVoltageDrop" type="number" step="0.01" />
+        </div>
+
+        <div class="field">
+          <label for="circuitResult">Rezultat</label>
+          <select id="circuitResult">
+            <option>PROLAZ</option>
+            <option>PAD</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions top-gap">
+        <button class="btn" id="addCircuitBtn" type="button">Dodaj krug</button>
+      </div>
+
+      <div id="circuitsTableWrap" class="top-gap"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="signatureModal">
+    <div class="modal-content">
+      <div class="modal-head">
+        <h3>Potpis</h3>
+        <button class="btn" id="closeSignatureModalBtn" type="button">Zatvori</button>
+      </div>
+
+      <canvas id="signatureCanvas" width="900" height="260"></canvas>
+
+      <div class="actions top-gap">
+        <button class="btn" id="clearSignatureBtn" type="button">Obriši</button>
+        <button class="btn" id="saveSignatureBtn" type="button">Spremi potpis</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="settingsModal">
+    <div class="modal-content">
+      <div class="modal-head">
+        <h3>Postavke firme</h3>
+        <button class="btn" id="closeSettingsBtn" type="button">Zatvori</button>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="field">
+          <label for="companyName">Naziv firme</label>
+          <input id="companyName" type="text" placeholder="Naziv firme d.o.o." />
+        </div>
+
+        <div class="field">
+          <label for="companyOib">OIB</label>
+          <input id="companyOib" type="text" placeholder="12345678901" />
+        </div>
+
+        <div class="field field-full">
+          <label for="companyAddress">Adresa</label>
+          <input id="companyAddress" type="text" placeholder="Ulica i broj, grad" />
+        </div>
+
+        <div class="field">
+          <label for="companyEmail">Email</label>
+          <input id="companyEmail" type="email" placeholder="info@firma.hr" />
+        </div>
+
+        <div class="field">
+          <label for="companyPhone">Telefon</label>
+          <input id="companyPhone" type="text" placeholder="+385 ..." />
+        </div>
+
+        <div class="field">
+          <label for="companyWeb">Web</label>
+          <input id="companyWeb" type="text" placeholder="www.firma.hr" />
+        </div>
+
+        <div class="field">
+          <label for="responsiblePerson">Odgovorna osoba</label>
+          <input id="responsiblePerson" type="text" placeholder="Ime i prezime" />
+        </div>
+
+        <div class="field field-full">
+          <label for="signatureText">Tekst potpisa / napomena</label>
+          <textarea id="signatureText" placeholder="Ovlaštena osoba / potpis"></textarea>
+        </div>
+
+        <div class="field field-full">
+          <label for="companyLogo">Logo firme</label>
+          <input id="companyLogo" type="file" accept="image/*" />
+        </div>
+      </div>
+
+      <div class="actions top-gap right-actions">
+        <button class="btn" id="openSignatureBtn" type="button">Potpis</button>
+        <button class="btn" id="saveSettingsBtn" type="button">Spremi postavke</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
